@@ -29,12 +29,7 @@ namespace CustomerApi.Service
 
         public Customer GetCustomer(long id)
         {
-            var customer = _context.Customers.Find(id);
-
-            if (customer == null)
-            {
-                throw new ArgumentNullException("id");
-            }
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             return customer;
         }
@@ -51,7 +46,7 @@ namespace CustomerApi.Service
 
             if (cust == null)
             {
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException("customer");
             }
 
             cust.FirstName = customer.FirstName;

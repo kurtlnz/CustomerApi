@@ -29,6 +29,11 @@ namespace CustomerApi.Controllers
         {
             var customer = _customerService.GetCustomer(id);
 
+            if(customer == null)
+            {
+                return NotFound();
+            }
+
             return customer;
         }
 
