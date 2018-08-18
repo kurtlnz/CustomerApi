@@ -76,7 +76,7 @@ namespace CustomerApi.Tests.MSTest
             // Arrange
             var context = CreateDummyContext("AddCustomer_Test");
             var service = new CustomerService(context);
-            
+
             // Act
             service.AddCustomer(new Customer { FirstName = "Kurt", LastName = "Lim", DateOfBirth = DateTime.Today });
 
@@ -114,7 +114,7 @@ namespace CustomerApi.Tests.MSTest
             var customer = new Customer { FirstName = "Kurt", LastName = "Cobain", DateOfBirth = DateTime.Today };
             context.Add(customer);
             context.SaveChanges();
-            
+
             // Act
             service.RemoveCustomer(customer.Id);
 
