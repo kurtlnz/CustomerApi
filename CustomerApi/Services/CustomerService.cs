@@ -15,11 +15,11 @@ namespace CustomerApi.Service
             _context = customerContext;
 
             // Initial customer
-            if (_context.Customers.Count() == 0)
-            {
-                _context.Customers.Add(new Customer { FirstName = "John", LastName = "Smith", DateOfBirth = new DateTime(1964, 04, 30) });
-                _context.SaveChanges();
-            }
+            //if (_context.Customers.Count() == 0)
+            //{
+            //    _context.Customers.Add(new Customer { FirstName = "John", LastName = "Smith", DateOfBirth = new DateTime(1964, 04, 30) });
+            //    _context.SaveChanges();
+            //}
         }
 
         public List<Customer> GetAllCustomers()
