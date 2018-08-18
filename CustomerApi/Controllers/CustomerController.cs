@@ -15,6 +15,8 @@ namespace CustomerApi.Controllers
 
         public CustomerController(ICustomerService customerService)
         {
+            /* Inject ICustomerService interface into constructor 
+             * and throw exception if customerService is null. */
             _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         }
 
@@ -29,6 +31,7 @@ namespace CustomerApi.Controllers
         {
             var customer = _customerService.GetCustomer(id);
 
+            // Return 404 if cannot find customer with id
             if(customer == null)
             {
                 return NotFound();
@@ -40,6 +43,7 @@ namespace CustomerApi.Controllers
         [HttpPost]
         public IActionResult Create(Customer customer)
         {
+            // Add Customer
             _customerService.AddCustomer(customer);
 
             return CreatedAtRoute("GetCustomer", new { id = customer.Id }, customer);
@@ -48,17 +52,33 @@ namespace CustomerApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(long id, Customer cust)
         {
-            _customerService.UpdateCustomer(id, cust);
+            // Try update Customer
+            var success = _customerService.UpdateCustomer(id, cust);
 
-            return NoContent();
+            // Return 404 if cannot find customer with id
+            if (!success)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            _customerService.RemoveCustomer(id);
+            // Try remove Customer
+            var success = _customerService.RemoveCustomer(id);
 
-            return NoContent();
+            // Return 404 if cannot find customer with id
+            if (!success)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+
         }
     }
 }

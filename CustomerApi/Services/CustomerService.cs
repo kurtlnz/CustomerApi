@@ -40,13 +40,13 @@ namespace CustomerApi.Service
             _context.SaveChanges();
         }
 
-        public void UpdateCustomer(long id, Customer customer)
+        public bool UpdateCustomer(long id, Customer customer)
         {
-            var cust = _context.Customers.Find(id);
+            var cust = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (cust == null)
             {
-                throw new ArgumentNullException("customer");
+                return false;
             }
 
             cust.FirstName = customer.FirstName;
@@ -55,19 +55,23 @@ namespace CustomerApi.Service
 
             _context.Customers.Update(cust);
             _context.SaveChanges();
+
+            return true;
         }
 
-        public void RemoveCustomer(long id)
+        public bool RemoveCustomer(long id)
         {
-            var customer = _context.Customers.Find(id);
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customer == null)
             {
-                throw new ArgumentNullException("id");
+                return false;
             }
 
             _context.Customers.Remove(customer);
             _context.SaveChanges();
+
+            return true;
         }
     }
 }
