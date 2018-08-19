@@ -1,4 +1,5 @@
 ﻿using CustomerApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +15,22 @@ namespace CustomerApi.Service
         {
             _context = customerContext;
 
-            // Initial customer
+            //Initial customers - For testing
             //if (_context.Customers.Count() == 0)
             //{
-            //    _context.Customers.Add(new Customer { FirstName = "John", LastName = "Smith", DateOfBirth = new DateTime(1964, 04, 30) });
+            //    _context.Customers.Add(new Customer { FirstName = "John", LastName = "Smith", DateOfBirth = new DateTime(1968, 04, 30) });
+            //    _context.Customers.Add(new Customer { FirstName = "Dave", LastName = "Smith", DateOfBirth = new DateTime(1964, 04, 30) });
+            //    _context.Customers.Add(new Customer { FirstName = "John", LastName = "Lennon", DateOfBirth = new DateTime(1966, 04, 30) });
             //    _context.SaveChanges();
             //}
         }
 
-        public List<Customer> GetAllCustomers()
+        public List<Customer> GetCustomers(CustomerFilterModel filterModel)
         {
-            return _context.Customers.ToList();
+            return _context.Customers
+                .Where(c => string.IsNullOrWhiteSpace(filterModel.FirstName) || c.FirstName == filterModel.FirstName)
+                .Where(c => string.IsNullOrWhiteSpace(filterModel.LastName) || c.LastName == filterModel.LastName)
+                .ToList();
         }
 
         public Customer GetCustomer(long id)

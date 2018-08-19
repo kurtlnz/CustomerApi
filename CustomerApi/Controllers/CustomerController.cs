@@ -21,9 +21,11 @@ namespace CustomerApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Customer>> GetAll()
+        public ActionResult<List<Customer>> GetAll([FromQuery] CustomerFilterModel filterParams)
         {
-            return _customerService.GetAllCustomers();
+            var customers = _customerService.GetCustomers(filterParams);
+
+            return Ok(customers);
         }
 
         [HttpGet("{id}", Name = "GetCustomer")]
@@ -37,7 +39,7 @@ namespace CustomerApi.Controllers
                 return NotFound();
             }
 
-            return customer;
+            return Ok(customer);
         }
 
         [HttpPost]

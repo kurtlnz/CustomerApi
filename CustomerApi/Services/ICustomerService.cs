@@ -5,7 +5,7 @@ namespace CustomerApi.Service
 {
     public interface ICustomerService
     {
-        List<Customer> GetAllCustomers();
+        List<Customer> GetCustomers(CustomerFilterModel customerFilterModel);
         Customer GetCustomer(long id);
         void AddCustomer(Customer customer);
         bool UpdateCustomer(long id, Customer customer);

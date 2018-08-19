@@ -17,6 +17,7 @@ namespace CustomerApi.Tests.MSTest
          * in my tests I've used the below method to generate 
          * unique contexts for each test. */
 
+        // Create DB Context for Customer Unit Tests
         private CustomerContext CreateDummyContext(string dbName)
         {
             // Create DbContextOptions
@@ -30,27 +31,43 @@ namespace CustomerApi.Tests.MSTest
             return context;
         }
 
+        // Generate dummy data for Customer Unit Tests if needed
         private void GenerateDummyCustomers(CustomerContext context)
         {
             context.Add(new Customer { Id = 1, FirstName = "Kurt", LastName = "Cobain", DateOfBirth = DateTime.Today });
-            context.Add(new Customer { Id = 2, FirstName = "Dave", LastName = "Grohl", DateOfBirth = DateTime.Today });
-            context.Add(new Customer { Id = 3, FirstName = "Jim", LastName = "Morrison", DateOfBirth = DateTime.Today });
+            context.Add(new Customer { Id = 2, FirstName = "Dave", LastName = "Grohl", DateOfBirth = DateTime.Today.AddDays(1) });
+            context.Add(new Customer { Id = 3, FirstName = "Jim", LastName = "Morrison", DateOfBirth = DateTime.Today.AddDays(2) });
             context.SaveChanges();
         }
 
         [TestMethod]
-        public void GetAllCustomers_ShouldReturnAllCustomers()
+        public void GetCustomers_ShouldReturnAllCustomers()
         {
             // Arrange
-            var context = CreateDummyContext("GetAllCustomers_Test");
+            var context = CreateDummyContext("GetCustomers_Test");
             var service = new CustomerService(context);
             GenerateDummyCustomers(context);
 
             // Act
-            var result = service.GetAllCustomers() as List<Customer>;
+            var result = service.GetCustomers(new CustomerFilterModel { }) as List<Customer>;
 
             //Assert
             Assert.AreEqual(3, result.Count);
+        }
+
+        [TestMethod]
+        public void GetCustomers_FilterBy_ShouldReturnFilteredCustomers()
+        {
+            // Arrange
+            var context = CreateDummyContext("GetCustomersFiltered_Test");
+            var service = new CustomerService(context);
+            GenerateDummyCustomers(context);
+
+            // Act
+            var result = service.GetCustomers(new CustomerFilterModel { FirstName = "Kurt" }) as List<Customer>;
+
+            //Assert
+            Assert.AreEqual(1, result.Count);
         }
 
         [TestMethod]
@@ -67,7 +84,7 @@ namespace CustomerApi.Tests.MSTest
             //Assert
             Assert.AreEqual("Dave", customer.FirstName);
             Assert.AreEqual("Grohl", customer.LastName);
-            Assert.AreEqual(DateTime.Today, customer.DateOfBirth);
+            Assert.AreEqual(DateTime.Today.AddDays(1), customer.DateOfBirth);
         }
 
         [TestMethod]
@@ -78,7 +95,7 @@ namespace CustomerApi.Tests.MSTest
             var service = new CustomerService(context);
 
             // Act
-            service.AddCustomer(new Customer { FirstName = "Kurt", LastName = "Lim", DateOfBirth = DateTime.Today });
+            service.AddCustomer(new Customer { FirstName = "Kurt", LastName = "Cobain", DateOfBirth = DateTime.Today });
 
             // Assert
             Assert.AreEqual(1, context.Customers.Count());
@@ -93,7 +110,7 @@ namespace CustomerApi.Tests.MSTest
             GenerateDummyCustomers(context);
 
             // Act
-            var customer = new Customer { FirstName = "Freddie", LastName = "Mercury", DateOfBirth = DateTime.Today.AddDays(1) };
+            var customer = new Customer { FirstName = "Freddie", LastName = "Mercury", DateOfBirth = DateTime.Today.AddDays(2) };
             service.UpdateCustomer(2, customer);
 
             //Assert
@@ -101,7 +118,7 @@ namespace CustomerApi.Tests.MSTest
 
             Assert.AreEqual("Freddie", result.FirstName);
             Assert.AreEqual("Mercury", result.LastName);
-            Assert.AreEqual(DateTime.Today.AddDays(1), result.DateOfBirth);
+            Assert.AreEqual(DateTime.Today.AddDays(2), result.DateOfBirth);
         }
 
         [TestMethod]
